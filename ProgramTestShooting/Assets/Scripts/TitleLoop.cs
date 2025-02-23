@@ -11,6 +11,10 @@ public class TitleLoop : MonoBehaviour
 
 	[Header("Layout")]
 	public Transform m_ui_title;
+	
+	[Header("Audio")]
+	[SerializeField] private AudioSource audioSource;
+	[SerializeField] private AudioClip menuAudioClip;
 
 	//------------------------------------------------------------------------------
 
@@ -56,10 +60,17 @@ public class TitleLoop : MonoBehaviour
 	void SetupTitle()
 	{
 		m_ui_title.gameObject.SetActive(true);
+
+		if (audioSource != null)
+		{
+			audioSource.PlayOneShot(menuAudioClip);
+			audioSource.loop = true;
+		}
 	}
 
 	void CleanupTitle()
 	{
 		m_ui_title.gameObject.SetActive(false);
+		audioSource.Stop();
 	}
 }

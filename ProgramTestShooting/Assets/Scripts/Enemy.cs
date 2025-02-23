@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,16 +48,24 @@ public class Enemy : MonoBehaviour
 	}
 
 	//------------------------------------------------------------------------------
-
-	private void OnCollisionEnter(Collision collision)
+	private void OnTriggerEnter(Collider other)
 	{
-		PlayerBullet player_bullet = collision.transform.GetComponent<PlayerBullet>();
+		PlayerBullet player_bullet = other.transform.GetComponent<PlayerBullet>();
 		if (player_bullet)
 		{
 			DestroyByPlayer(player_bullet);
 		}
-	}
 
+		if (other.CompareTag("Player"))
+		{
+			Player player = other.transform.GetComponentInParent<Player>();
+			if(player) player.TakeDamage();
+			DeleteObject();
+		}
+		
+		//Debug.Log("Hit by: " + other.gameObject.name);
+	}
+	
 	void DestroyByPlayer(PlayerBullet a_player_bullet)
 	{
 		//add score

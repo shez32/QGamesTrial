@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,11 +17,23 @@ public class StageLoop : MonoBehaviour
 	[Header("Layout")]
 	public Transform m_stage_transform;
 	public Text m_stage_score_text;
+	[SerializeField] private Camera defaultCamera;
 
 	[Header("Prefab")]
 	public Player m_prefab_player;
 	public EnemySpawner m_prefab_enemy_spawner;
-
+	
+	[Header("Boundary")]
+	[SerializeField] private BoxCollider topCollider;
+	[SerializeField] private BoxCollider bottomCollider;
+	[SerializeField] private BoxCollider leftCollider;
+	[SerializeField] private BoxCollider rightCollider;
+	public BackgroundPanner panner;
+	
+	[Header("Audio")]
+	[SerializeField] private AudioSource audioSource;
+	[SerializeField] private AudioClip gameAudioClip;
+	[SerializeField] private AudioClip gameOverAudioClip;
 	//
 	int m_game_score = 0;
 
@@ -71,7 +82,7 @@ public class StageLoop : MonoBehaviour
 			if (player)
 			{
 				player.transform.position = new Vector3(0, -4, 0);
-				player.StartRunning();
+				player.CalculateBounds(topCollider, bottomCollider, leftCollider, rightCollider);
 			}
 		}
 
@@ -94,6 +105,12 @@ public class StageLoop : MonoBehaviour
 				}
 			}
 		}
+
+		if (audioSource != null)
+		{
+			audioSource.PlayOneShot(gameAudioClip);
+			audioSource.loop = true;
+		}
 	}
 
 	void CleanupStage()
@@ -108,6 +125,8 @@ public class StageLoop : MonoBehaviour
 		}
 
 		Instance = null;
+		
+		audioSource.Stop();
 	}
 
 	//------------------------------------------------------------------------------
@@ -125,5 +144,47 @@ public class StageLoop : MonoBehaviour
 			m_stage_score_text.text = $"Score {m_game_score:00000}";
 		}
 	}
+
+	public void OnPlayerDeath()
+	{
+		OnDamage();
+		
+		if (audioSource != null)
+		{
+			audioSource.Stop();
+			audioSource.PlayOneShot(gameOverAudioClip);
+			audioSource.loop = false;
+		}
+		
+		panner.SetActive(false);
+	}
+
+	public void OnDamage()
+	{
+		if (defaultCamera != null)
+		{
+			StartCoroutine(CameraShake(0.2f, 0.3f));
+		}
+	}
+
+	private IEnumerator CameraShake(float duration, float magnitude)
+	{
+		Vector3 originalPosition = defaultCamera.transform.localPosition;
+		float elapsed = 0.0f;
+
+		while (elapsed < duration)
+		{
+			float x = Random.Range(-1f, 1f) * magnitude;
+			float y = Random.Range(-1f, 1f) * magnitude;
+
+			defaultCamera.transform.localPosition = new Vector3(x, y, originalPosition.z);
+
+			elapsed += Time.deltaTime;
+			yield return null;
+		}
+
+		defaultCamera.transform.localPosition = originalPosition;
+	}
+	
 
 }

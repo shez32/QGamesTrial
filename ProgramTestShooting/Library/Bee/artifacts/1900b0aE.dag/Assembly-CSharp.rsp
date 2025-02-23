@@ -346,6 +346,7 @@
 -analyzer:"G:/Unity/Editors/2022.3.58f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Input/DefaultInputActions.cs"
 "Assets/Scripts/BackgroundPanner.cs"
+"Assets/Scripts/Cleaner.cs"
 "Assets/Scripts/Enemy.cs"
 "Assets/Scripts/EnemySpawner.cs"
 "Assets/Scripts/Player.cs"
