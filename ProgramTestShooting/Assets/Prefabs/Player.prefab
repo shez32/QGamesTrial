@@ -5299,21 +5299,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98353559c3d56bb45beb138657a73ad9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentFireMode: 1
+  currentFireMode: 0
   mPrefabPlayerBullet: {fileID: 7941598295554223428, guid: 489ca4fe60917514a823a5455dab0a38, type: 3}
   bulletSpawnActor: {fileID: 3911069672973420415}
   fireRate: 0.2
-  tripleShotActive: 1
+  tripleShotActive: 0
   maxSpeed: 10
   acceleration: 10
   deceleration: 15
   rotationSmoothing: 5
   tiltMultiplier: 45
-  maxLives: 1
+  maxLives: 5
   invincibilityDuration: 1.5
   flashDuration: 0.1
   damageColor: {r: 1, g: 1, b: 1, a: 1}
-  deathParticles: {fileID: 0}
+  deathParticles: {fileID: 7040001075569566421, guid: 1810e19cd94099e4493ffb9809335c75, type: 3}
   offset: 1
   audioSource: {fileID: 7300186840733809029}
   singleShotClip: {fileID: 8300000, guid: 564eacfdce392b8458b9c50407b99718, type: 3}

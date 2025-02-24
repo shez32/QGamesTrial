@@ -182,3 +182,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_move_speed: 8
   m_life_time: 2
+  isPlayerUsing: 1

@@ -750,7 +750,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b85b9a263787b54d90d2ce68d506f61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_title_loop: {fileID: 1106369388}
+  titleLoop: {fileID: 1106369388}
   m_stage_transform: {fileID: 431413297}
   m_stage_score_text: {fileID: 999465702}
   defaultCamera: {fileID: 963194227}

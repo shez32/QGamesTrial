@@ -24,12 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7471066801036984432}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-2756452676086639708
 MonoBehaviour:
@@ -43,5 +44,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21adf3c468347b548b28b94e38ff8aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_prefab_enemy: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
-  m_spawn_interval: 2
+  EnemySpawnEntries:
+  - enemyPrefab: {fileID: 8205035551131575323, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
+    chance: 30
+  - enemyPrefab: {fileID: 8205035551131575323, guid: 1426f1f1d8eafda4fa97ea418bf7a357, type: 3}
+    chance: 20
+  - enemyPrefab: {fileID: 8205035551131575323, guid: a8e4def461fd1d641bdae4b157b415b3, type: 3}
+    chance: 50
+  minSpawnInterval: 0.2
+  maxSpawnInterval: 3
+  spawnRangeMin: -5
+  spawnRangeMax: 5
+  maxActiveEnemies: 10
