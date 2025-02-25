@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public abstract class Enemy : MonoBehaviour
 {
@@ -6,12 +7,21 @@ public abstract class Enemy : MonoBehaviour
 	public float moveSpeed;
 	public int scoreValue;
 	public float health;
+	public float lifeTime = 20f;
 
+	public GameObject deathParticles;
+	public GameObject hitParticles;
+	
+	public AudioSource audioSource;
+	public AudioClip deathAudio;
+	public AudioClip hitAudio;
+	
 	protected Rigidbody rb;
 
 	protected virtual void Awake()
 	{
 		rb = GetComponent<Rigidbody>();
+		audioSource = gameObject.AddComponent<AudioSource>();
 	}
 
 	protected virtual void Start()
@@ -22,6 +32,9 @@ public abstract class Enemy : MonoBehaviour
 	protected virtual void Update()
 	{
 		Move();
+		
+		lifeTime -= Time.deltaTime;
+		if(lifeTime <= 0) Die();
 	}
 	
 	protected abstract void Move();
@@ -31,13 +44,30 @@ public abstract class Enemy : MonoBehaviour
 		health -= damage;
 		if (health <= 0)
 		{
-			Die();
+			Instantiate(deathParticles, transform.position, Quaternion.identity);
+			DestroyByPlayer();
+		}
+		else
+		{
+			Instantiate(hitParticles, transform.position, Quaternion.identity);
+			PlaySound(hitAudio);
 		}
 	}
 
-	protected virtual void Die()
+	protected virtual void DestroyByPlayer()
 	{
 		StageLoop.Instance.AddScore(scoreValue);
+		Die();
+	}
+	
+	protected virtual void Die()
+	{
+		GameObject tempAudioSource = new GameObject("TempAudio");
+		AudioSource tempSource = tempAudioSource.AddComponent<AudioSource>();
+		tempSource.clip = deathAudio;
+		tempSource.Play();
+		
+		Destroy(tempAudioSource, deathAudio.length);
 		
 		GameObject.Destroy(gameObject);
 	}
@@ -48,7 +78,8 @@ public abstract class Enemy : MonoBehaviour
 		PlayerBullet playerBullet = other.transform.GetComponent<PlayerBullet>();
 		if (playerBullet && playerBullet.isPlayerUsing)
 		{
-			DestroyByPlayer(playerBullet);
+			TakeDamage(1);
+			GameObject.Destroy(playerBullet.gameObject);
 		}
 
 		if (other.CompareTag("Player"))
@@ -57,18 +88,15 @@ public abstract class Enemy : MonoBehaviour
 			if(player) player.TakeDamage();
 			Die();
 		}
-		
 		//Debug.Log("Hit by: " + other.gameObject.name);
 	}
-	
-	void DestroyByPlayer(PlayerBullet playerBullet)
-	{
-		//delete bullet
-		if (playerBullet)
-		{
-			playerBullet.DeleteObject();
-		}
 
-		Die();
+	protected virtual void PlaySound(AudioClip clip)
+	{
+		if (audioSource != null && clip != null)
+		{
+			audioSource.PlayOneShot(clip);
+		}
 	}
+	
 }

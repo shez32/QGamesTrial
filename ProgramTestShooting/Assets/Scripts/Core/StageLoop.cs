@@ -25,10 +25,10 @@ public class StageLoop : MonoBehaviour
 	public EnemySpawner m_prefab_enemy_spawner;
 	
 	[Header("Boundary")]
-	[SerializeField] private BoxCollider topCollider;
-	[SerializeField] private BoxCollider bottomCollider;
-	[SerializeField] private BoxCollider leftCollider;
-	[SerializeField] private BoxCollider rightCollider;
+	public BoxCollider topCollider;
+	public BoxCollider bottomCollider;
+	public BoxCollider leftCollider;
+	public BoxCollider rightCollider;
 	public BackgroundPanner panner;
 	
 	[Header("Audio")]

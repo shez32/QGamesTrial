@@ -181,3 +181,4 @@ MonoBehaviour:
   moveSpeed: 3
   scoreValue: 100
   health: 1
+  lifeTime: 20

@@ -1,0 +1,72 @@
+# StarMade Wavefront Obj Export Material
+
+newmtl mtl_0
+Ka 0.000 0.000 0.000
+Kd 1.000 1.000 1.000
+Ks 0.800 0.800 0.800
+Ns 20.000
+illum 2
+Ni 1.000000
+d 1.000000
+map_Kd t000.png
+
+newmtl mtl_1
+Ka 0.000 0.000 0.000
+Kd 1.000 1.000 1.000
+Ks 0.800 0.800 0.800
+Ns 20.000
+illum 2
+Ni 1.000000
+d 1.000000
+map_Kd t001.png
+
+newmtl mtl_2
+Ka 0.000 0.000 0.000
+Kd 1.000 1.000 1.000
+Ks 0.800 0.800 0.800
+Ns 20.000
+illum 2
+Ni 1.000000
+d 1.000000
+map_Kd t002.png
+
+newmtl mtl_7
+Ka 0.000 0.000 0.000
+Kd 1.000 1.000 1.000
+Ks 0.800 0.800 0.800
+Ns 20.000
+illum 2
+Ni 1.000000
+d 1.000000
+map_Kd custom.png
+
+newmtl mtl_-3
+Ka 0.000 0.000 0.000
+Kd 1.000 1.000 1.000
+Ks 0.800 0.800 0.800
+Ns 20.000
+illum 2
+Ni 1.000000
+d 1.000000
+map_Kd LOD_-3.png
+
+newmtl mtl_-1
+Ka 0.000 0.000 0.000
+Kd 1.000 1.000 1.000
+Ks 0.800 0.800 0.800
+Ns 20.000
+illum 2
+Ni 1.000000
+d 1.000000
+map_Kd LOD_-1.png
+
+newmtl mtl_-2
+Ka 0.000 0.000 0.000
+Kd 1.000 1.000 1.000
+Ks 0.800 0.800 0.800
+Ns 20.000
+illum 2
+Ni 1.000000
+d 1.000000
+map_Kd LOD_-2.png
+
