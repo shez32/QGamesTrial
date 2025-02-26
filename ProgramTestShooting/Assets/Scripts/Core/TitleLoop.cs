@@ -11,6 +11,7 @@ public class TitleLoop : MonoBehaviour
 
 	[Header("Layout")]
 	public Transform m_ui_title;
+	public Transform mainMenu;
 	
 	[Header("Audio")]
 	[SerializeField] private AudioSource audioSource;
@@ -21,45 +22,20 @@ public class TitleLoop : MonoBehaviour
 	private void Start()
 	{
 		//default start
-		StartTitleLoop();
+		SetupTitle();
 	}
 
-	//
-	#region loop
 	public void StartTitleLoop()
 	{
-		StartCoroutine(TitleCoroutine());
+		CleanupTitle();
+		
+		m_stage_loop.StartStageLoop();
 	}
-
-	/// <summary>
-	/// Title loop
-	/// </summary>
-	private IEnumerator TitleCoroutine()
-	{
-		Debug.Log($"Start TitleCoroutine");
-
-		SetupTitle();
-
-		//waiting game start
-		while (true)
-		{
-			if (Input.GetKeyDown(KeyCode.Space))
-			{
-				CleanupTitle();
-
-				//Start StageLoop
-				m_stage_loop.StartStageLoop();
-				yield break;
-			}
-			yield return null;
-		}
-	}
-	#endregion
-
-	//
-	void SetupTitle()
+	
+	public void SetupTitle()
 	{
 		m_ui_title.gameObject.SetActive(true);
+		mainMenu.gameObject.SetActive(true);
 
 		if (audioSource != null)
 		{
@@ -71,6 +47,13 @@ public class TitleLoop : MonoBehaviour
 	void CleanupTitle()
 	{
 		m_ui_title.gameObject.SetActive(false);
+		mainMenu.gameObject.SetActive(false);
+		
 		audioSource.Stop();
+	}
+
+	public void QuitGame()
+	{
+		Application.Quit();
 	}
 }

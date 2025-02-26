@@ -18,6 +18,8 @@ public class StageLoop : MonoBehaviour
 	[Header("Layout")]
 	public Transform m_stage_transform;
 	public Text m_stage_score_text;
+	public GameObject restartMenu;
+	
 	[SerializeField] private Camera defaultCamera;
 
 	[Header("Prefab")]
@@ -77,6 +79,8 @@ public class StageLoop : MonoBehaviour
 
 		m_game_score = 0;
 		RefreshScore();
+		
+		restartMenu.SetActive(false);
 
 		//create player
 		{
@@ -91,11 +95,8 @@ public class StageLoop : MonoBehaviour
 		//create enemy spawner
 		{
 			{
-				spawner = Instantiate(m_prefab_enemy_spawner, m_stage_transform);
-				if (spawner)
-				{
+				if (!spawner) spawner = Instantiate(m_prefab_enemy_spawner, m_stage_transform);
 					spawner.transform.position = new Vector3(0, 5.5f, 0);
-				}
 			}
 		}
 
@@ -108,6 +109,8 @@ public class StageLoop : MonoBehaviour
 
 	void CleanupStage()
 	{
+		restartMenu.SetActive(false);
+		
 		//delete all object in Stage
 		{
 			for (var n = 0; n < m_stage_transform.childCount; ++n)
@@ -151,6 +154,8 @@ public class StageLoop : MonoBehaviour
 
 		GameObject.Destroy(spawner);
 		panner.SetActive(false);
+		
+		restartMenu.SetActive(true);
 	}
 
 	public void OnDamage()
@@ -179,6 +184,17 @@ public class StageLoop : MonoBehaviour
 
 		defaultCamera.transform.localPosition = originalPosition;
 	}
-	
+
+	public void RestartGame()
+	{
+		CleanupStage();
+		SetupStage();
+	}
+
+	public void MainMenu()
+	{
+		CleanupStage();
+		titleLoop.SetupTitle();
+	}
 
 }

@@ -352,6 +352,7 @@
 "Assets/Scripts/Enemies/Enemy_Kamikaze.cs"
 "Assets/Scripts/Enemies/Enemy_Shooter.cs"
 "Assets/Scripts/Enemies/Enemy_StraightMover.cs"
+"Assets/Scripts/Player/NotifyDamage.cs"
 "Assets/Scripts/Player/Player.cs"
 "Assets/Scripts/Player/PlayerBullet.cs"
 "Assets/Scripts/Visuals/BackgroundPanner.cs"

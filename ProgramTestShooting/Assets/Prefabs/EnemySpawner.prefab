@@ -46,11 +46,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemySpawnEntries:
   - enemyPrefab: {fileID: 8205035551131575323, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
-    chance: 30
+    chance: 0
   - enemyPrefab: {fileID: 8205035551131575323, guid: 1426f1f1d8eafda4fa97ea418bf7a357, type: 3}
-    chance: 20
+    chance: 100
   - enemyPrefab: {fileID: 8205035551131575323, guid: a8e4def461fd1d641bdae4b157b415b3, type: 3}
-    chance: 50
+    chance: 46
   minSpawnInterval: 0.2
   maxSpawnInterval: 3
   spawnRangeMin: -5

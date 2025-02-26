@@ -3,7 +3,12 @@ guid: 96a38b918eb55b54792e470dbc04b624
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - deathParticles: {fileID: 207228216033871840, guid: 9f3cdb18e26497a42b2754075a076a14, type: 3}
+  - hitParticles: {fileID: 4498567167025756413, guid: 3a434a25a799e8843a84ce3ffee01b2e, type: 3}
+  - audioSource: {instanceID: 0}
+  - deathAudio: {fileID: 8300000, guid: ef60647930fb8c748a082bfb868f7234, type: 3}
+  - hitAudio: {fileID: 8300000, guid: 8e0348dce4aa26045a16b9be2706fdce, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

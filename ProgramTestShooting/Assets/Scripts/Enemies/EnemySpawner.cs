@@ -70,7 +70,7 @@ public class EnemySpawner : MonoBehaviour
 		{
 			float spawnX = Random.Range(spawnRangeMin, spawnRangeMax);
 			Vector3 spawnPosition = new Vector3(spawnX, transform.position.y, transform.position.z);
-			Instantiate(selectedEnemy, spawnPosition, Quaternion.identity);
+			Instantiate(selectedEnemy, spawnPosition, Quaternion.identity, transform);
 		}
 	}
 

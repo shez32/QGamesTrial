@@ -44,12 +44,12 @@ public abstract class Enemy : MonoBehaviour
 		health -= damage;
 		if (health <= 0)
 		{
-			Instantiate(deathParticles, transform.position, Quaternion.identity);
+			Instantiate(deathParticles, transform.position, Quaternion.identity, StageLoop.Instance.transform);
 			DestroyByPlayer();
 		}
 		else
 		{
-			Instantiate(hitParticles, transform.position, Quaternion.identity);
+			Instantiate(hitParticles, transform.position, Quaternion.identity, StageLoop.Instance.transform);
 			PlaySound(hitAudio);
 		}
 	}
@@ -63,6 +63,7 @@ public abstract class Enemy : MonoBehaviour
 	protected virtual void Die()
 	{
 		GameObject tempAudioSource = new GameObject("TempAudio");
+		tempAudioSource.transform.SetParent(StageLoop.Instance.transform);
 		AudioSource tempSource = tempAudioSource.AddComponent<AudioSource>();
 		tempSource.clip = deathAudio;
 		tempSource.Play();
@@ -86,6 +87,7 @@ public abstract class Enemy : MonoBehaviour
 		{
 			Player player = other.transform.GetComponentInParent<Player>();
 			if(player) player.TakeDamage();
+			Instantiate(deathParticles, transform.position, Quaternion.identity, StageLoop.Instance.transform);
 			Die();
 		}
 		//Debug.Log("Hit by: " + other.gameObject.name);

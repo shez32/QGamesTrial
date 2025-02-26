@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -195,6 +196,16 @@ public class Player : MonoBehaviour
 		minX = leftCollider.bounds.min.x + offset;
 		maxX = rightCollider.bounds.max.x - offset;
 	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		PlayerBullet playerBullet = other.transform.GetComponent<PlayerBullet>();
+		if (playerBullet && !playerBullet.isPlayerUsing)
+		{
+			TakeDamage();
+		}
+	}
+
 	public void TakeDamage()
 	{
 		if (isInvincible) return;
@@ -215,7 +226,8 @@ public class Player : MonoBehaviour
 
 	private void PlayerDeath()
 	{
-		GameObject tempAudio = new GameObject();
+		GameObject tempAudio = new GameObject("playerTempAudio");
+		tempAudio.transform.SetParent(StageLoop.Instance.transform);
 		AudioSource tempAudioSource = tempAudio.AddComponent<AudioSource>();
 		tempAudioSource.clip = deathSound;
 		tempAudioSource.Play();

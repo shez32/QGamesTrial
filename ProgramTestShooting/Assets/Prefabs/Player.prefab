@@ -171,6 +171,7 @@ GameObject:
   - component: {fileID: 7790960547436074104}
   - component: {fileID: 5142277300539289456}
   - component: {fileID: 5896349819307506093}
+  - component: {fileID: 5118843479716395980}
   - component: {fileID: 120216279401762318}
   m_Layer: 0
   m_Name: SM_Player
@@ -274,6 +275,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &5118843479716395980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5996418683514510521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 571c613b969f54546948c0703dda42e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!64 &120216279401762318
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -287,9 +300,9 @@ MeshCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
