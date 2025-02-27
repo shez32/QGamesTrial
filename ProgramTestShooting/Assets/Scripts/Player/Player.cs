@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// Player Character
@@ -44,7 +46,9 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioClip autoShotClip;
     [SerializeField] private AudioClip damageSound;
     [SerializeField] private AudioClip deathSound;
-    
+
+    [Header("UI")] 
+    [SerializeField] private GameObject heartPrefab;
     //------------------------------------------------------------------------------
 
     private DefaultInputActions defaultInputActions;
@@ -66,6 +70,8 @@ public class Player : MonoBehaviour
 	private Color originalColor;
 	
 	private int currentLives;
+
+	private List<Image> heartFills = new List<Image>(); 
 	
 	private void Awake()
 	{
@@ -79,6 +85,8 @@ public class Player : MonoBehaviour
 		originalColor = playerRenderer.material.GetColor("_EmissionColor");
 		
 		currentLives = maxLives;
+
+		InitializeHealthUI();
 	}
 
 	private void OnEnable()
@@ -168,6 +176,26 @@ public class Player : MonoBehaviour
 		isShooting = false;
 	}
 
+	private void InitializeHealthUI()
+	{
+		for (int i = 0; i < maxLives; i++)
+		{
+			GameObject heart = Instantiate(heartPrefab, StageLoop.Instance.healthPanel);
+			RectTransform heartRect = heart.GetComponent<RectTransform>();
+			heartRect.anchoredPosition = new Vector2(i * heartRect.rect.width, 0);
+			Image heartFill = heart.transform.Find("BG/FG").GetComponent<Image>();
+			heartFills.Add(heartFill);
+		}
+	}
+
+	private void UpdateHealthUI()
+	{
+		for (int i = 0; i < heartFills.Count; i++)
+		{
+			heartFills[i].enabled = i < currentLives;
+		}
+	}
+
 	private void Shoot()
 	{
 		Instantiate(mPrefabPlayerBullet, bulletSpawnActor.transform.position, bulletSpawnActor.transform.rotation);
@@ -206,13 +234,19 @@ public class Player : MonoBehaviour
 		}
 	}
 
+	public void Heal()
+	{
+		currentLives = Mathf.Min(currentLives + 1, maxLives);
+		UpdateHealthUI();
+	}
+
 	public void TakeDamage()
 	{
 		if (isInvincible) return;
 
 		currentLives--;
-		
-		//UI Here
+
+		UpdateHealthUI();
 
 		if (currentLives <= 0)
 		{

@@ -19,6 +19,7 @@ public class StageLoop : MonoBehaviour
 	public Transform m_stage_transform;
 	public Text m_stage_score_text;
 	public GameObject restartMenu;
+	public Transform healthPanel;
 	
 	[SerializeField] private Camera defaultCamera;
 
@@ -63,9 +64,6 @@ public class StageLoop : MonoBehaviour
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
 				//exit stage
-				CleanupStage();
-				titleLoop.StartTitleLoop();
-				yield break;
 			}
 			yield return null;
 		}
@@ -81,6 +79,7 @@ public class StageLoop : MonoBehaviour
 		RefreshScore();
 		
 		restartMenu.SetActive(false);
+		healthPanel.gameObject.SetActive(true);
 
 		//create player
 		{
