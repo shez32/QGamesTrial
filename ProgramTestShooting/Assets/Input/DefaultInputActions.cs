@@ -44,6 +44,15 @@ public partial class @DefaultInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BulletTime"",
+                    ""type"": ""Button"",
+                    ""id"": ""53d0d8f8-7779-45fc-a935-b6b4ad6529b1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -167,6 +176,17 @@ public partial class @DefaultInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""82f13b4e-efb4-4641-a60e-335e3b1ca4be"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KBScheme"",
+                    ""action"": ""BulletTime"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -189,6 +209,7 @@ public partial class @DefaultInputActions: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
+        m_Player_BulletTime = m_Player.FindAction("BulletTime", throwIfNotFound: true);
     }
 
     ~@DefaultInputActions()
@@ -257,12 +278,14 @@ public partial class @DefaultInputActions: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_Shoot;
+    private readonly InputAction m_Player_BulletTime;
     public struct PlayerActions
     {
         private @DefaultInputActions m_Wrapper;
         public PlayerActions(@DefaultInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
+        public InputAction @BulletTime => m_Wrapper.m_Player_BulletTime;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -278,6 +301,9 @@ public partial class @DefaultInputActions: IInputActionCollection2, IDisposable
             @Shoot.started += instance.OnShoot;
             @Shoot.performed += instance.OnShoot;
             @Shoot.canceled += instance.OnShoot;
+            @BulletTime.started += instance.OnBulletTime;
+            @BulletTime.performed += instance.OnBulletTime;
+            @BulletTime.canceled += instance.OnBulletTime;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -288,6 +314,9 @@ public partial class @DefaultInputActions: IInputActionCollection2, IDisposable
             @Shoot.started -= instance.OnShoot;
             @Shoot.performed -= instance.OnShoot;
             @Shoot.canceled -= instance.OnShoot;
+            @BulletTime.started -= instance.OnBulletTime;
+            @BulletTime.performed -= instance.OnBulletTime;
+            @BulletTime.canceled -= instance.OnBulletTime;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -318,5 +347,6 @@ public partial class @DefaultInputActions: IInputActionCollection2, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
+        void OnBulletTime(InputAction.CallbackContext context);
     }
 }

@@ -17,7 +17,7 @@ public class PlayerBullet : MonoBehaviour
 	{
 		if (isPlayerUsing)
 		{
-			transform.position += transform.up * m_move_speed * Time.deltaTime;
+			transform.position += transform.up * (m_move_speed / Time.timeScale) * Time.deltaTime;
 		}
 		else
 		{

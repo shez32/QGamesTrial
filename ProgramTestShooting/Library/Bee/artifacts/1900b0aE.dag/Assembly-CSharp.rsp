@@ -119,6 +119,7 @@
 -define:ENABLE_INPUT_SYSTEM
 -define:ENABLE_LEGACY_INPUT_MANAGER
 -define:TEXTCORE_FONT_ENGINE_1_5_OR_NEWER
+-define:UNITY_POST_PROCESSING_STACK_V2
 -define:CSHARP_7_OR_LATER
 -define:CSHARP_7_3_OR_NEWER
 -r:"G:/Unity/Editors/2022.3.58f1/Editor/Data/Managed/UnityEngine/UnityEditor.CoreModule.dll"
@@ -333,6 +334,8 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.ForUI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.PlasticSCM.Editor.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.Postprocessing.Editor.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.Postprocessing.Runtime.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.Rider.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.ref.dll"
@@ -355,6 +358,7 @@
 "Assets/Scripts/Player/NotifyDamage.cs"
 "Assets/Scripts/Player/Player.cs"
 "Assets/Scripts/Player/PlayerBullet.cs"
+"Assets/Scripts/Player/PowerUps.cs"
 "Assets/Scripts/Visuals/BackgroundPanner.cs"
 "Assets/Scripts/Visuals/Cleaner.cs"
 -langversion:9.0

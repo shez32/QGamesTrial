@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public abstract class Enemy : MonoBehaviour
 {
@@ -15,6 +14,9 @@ public abstract class Enemy : MonoBehaviour
 	public AudioSource audioSource;
 	public AudioClip deathAudio;
 	public AudioClip hitAudio;
+
+	public GameObject[] powerUps;
+	public int powerUpSpawnChance = 20;
 	
 	protected Rigidbody rb;
 
@@ -44,12 +46,12 @@ public abstract class Enemy : MonoBehaviour
 		health -= damage;
 		if (health <= 0)
 		{
-			Instantiate(deathParticles, transform.position, Quaternion.identity, StageLoop.Instance.transform);
+			Instantiate(deathParticles, transform.position, Quaternion.identity, StageLoop.Instance.m_stage_transform);
 			DestroyByPlayer();
 		}
 		else
 		{
-			Instantiate(hitParticles, transform.position, Quaternion.identity, StageLoop.Instance.transform);
+			Instantiate(hitParticles, transform.position, Quaternion.identity, StageLoop.Instance.m_stage_transform);
 			PlaySound(hitAudio);
 		}
 	}
@@ -69,6 +71,15 @@ public abstract class Enemy : MonoBehaviour
 		tempSource.Play();
 		
 		Destroy(tempAudioSource, deathAudio.length);
+
+		if (powerUps != null && powerUps.Length > 0)
+		{
+			if (Random.Range(0, 100) <= powerUpSpawnChance)
+			{
+				Instantiate(powerUps[Random.Range(0, powerUps.Length)], transform.position, Quaternion.identity,
+					StageLoop.Instance.m_stage_transform);
+			}
+		}
 		
 		GameObject.Destroy(gameObject);
 	}
@@ -87,7 +98,7 @@ public abstract class Enemy : MonoBehaviour
 		{
 			Player player = other.transform.GetComponentInParent<Player>();
 			if(player) player.TakeDamage();
-			Instantiate(deathParticles, transform.position, Quaternion.identity, StageLoop.Instance.transform);
+			Instantiate(deathParticles, transform.position, Quaternion.identity, StageLoop.Instance.m_stage_transform);
 			Die();
 		}
 		//Debug.Log("Hit by: " + other.gameObject.name);

@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -20,6 +21,8 @@ public class StageLoop : MonoBehaviour
 	public Text m_stage_score_text;
 	public GameObject restartMenu;
 	public Transform healthPanel;
+	public Transform powerUpPanel;
+	public PostProcessVolume postProcessVolume;
 	
 	[SerializeField] private Camera defaultCamera;
 
@@ -43,6 +46,7 @@ public class StageLoop : MonoBehaviour
 
 	private EnemySpawner spawner;
 	//------------------------------------------------------------------------------
+	
 	
 	#region loop
 	public void StartStageLoop()
@@ -80,6 +84,7 @@ public class StageLoop : MonoBehaviour
 		
 		restartMenu.SetActive(false);
 		healthPanel.gameObject.SetActive(true);
+		powerUpPanel.gameObject.SetActive(true);
 
 		//create player
 		{
@@ -109,6 +114,8 @@ public class StageLoop : MonoBehaviour
 	void CleanupStage()
 	{
 		restartMenu.SetActive(false);
+		healthPanel.gameObject.SetActive(false);
+		powerUpPanel.gameObject.SetActive(false);
 		
 		//delete all object in Stage
 		{
@@ -195,5 +202,6 @@ public class StageLoop : MonoBehaviour
 		CleanupStage();
 		titleLoop.SetupTitle();
 	}
+	
 
 }

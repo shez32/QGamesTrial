@@ -12,6 +12,8 @@ public class BulletCleaner : MonoBehaviour
     {
         if (invertTag)
         {
+            if(other.CompareTag("Powerup")) return;
+            
             if (!other.CompareTag(tagToClean))
             {
                 Destroy(other.gameObject);

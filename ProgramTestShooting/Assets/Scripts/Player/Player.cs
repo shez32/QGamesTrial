@@ -1,8 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 
 /// <summary>
@@ -17,11 +17,18 @@ public class Player : MonoBehaviour
 	};
 
 	[Header("Shooting")] 
-	public FireMode currentFireMode = FireMode.Single;
 	public PlayerBullet mPrefabPlayerBullet;
+	[SerializeField] private FireMode currentFireMode = FireMode.Single;
 	[SerializeField] private GameObject bulletSpawnActor;
 	[SerializeField] private float fireRate = 0.5f;
 	[SerializeField] private bool tripleShotActive = false;
+	
+	[Header("Bullet Time")] 
+	[SerializeField] private float bulletTimeDuration = 5f; 
+	[SerializeField] private float bulletTimeCooldown = 10f; 
+	[SerializeField] private float bulletTimeScale = 0.5f; 
+	[SerializeField] private Slider bulletTimeSlider;
+	[SerializeField] private float saturationTransitionDuration = 0.5f;
 	
 	[Header("Movement")]
     [SerializeField] private float maxSpeed = 10f;
@@ -49,11 +56,22 @@ public class Player : MonoBehaviour
 
     [Header("UI")] 
     [SerializeField] private GameObject heartPrefab;
+    [SerializeField] private GameObject powerUpSliderPrefab;
+    
+    //------------------------------------------------------------------------------
+    public float MaxSpeed { get => maxSpeed; set => maxSpeed = value; }
+    public float Acceleration { get => acceleration; set => acceleration = value; }
+    public float Deceleration { get => deceleration; set => deceleration = value; }
+    public FireMode CurrentFireMode { get => currentFireMode; set => currentFireMode = value; }
+    public bool TripleShotActive { get => tripleShotActive; set => tripleShotActive = value; }
+    
+    
     //------------------------------------------------------------------------------
 
     private DefaultInputActions defaultInputActions;
 	private InputAction movementInput;
 	private InputAction shootInput;
+	private InputAction bulletTimeInput;
 
 	private float lastShotTime;
 	private bool isShooting;
@@ -73,6 +91,14 @@ public class Player : MonoBehaviour
 
 	private List<Image> heartFills = new List<Image>(); 
 	
+	private bool isBulletTimeActive = false;
+	private float currentBulletTime;
+	private Coroutine bulletTimeCoroutine;
+	
+	private PostProcessVolume playerPostProcessVolume;
+	private ColorGrading colorGrading;
+	
+	
 	private void Awake()
 	{
 		defaultInputActions = new DefaultInputActions();
@@ -87,22 +113,45 @@ public class Player : MonoBehaviour
 		currentLives = maxLives;
 
 		InitializeHealthUI();
+		
+		currentBulletTime = bulletTimeDuration;
+		
+		bulletTimeSlider = Instantiate(powerUpSliderPrefab, StageLoop.Instance.powerUpPanel).GetComponentInChildren<Slider>(); 
+		
+		if (bulletTimeSlider != null)
+		{
+			bulletTimeSlider.maxValue = bulletTimeDuration;
+			bulletTimeSlider.value = currentBulletTime;
+		}
+
+		playerPostProcessVolume = StageLoop.Instance.postProcessVolume;
+		if (playerPostProcessVolume.profile.TryGetSettings(out colorGrading))
+		{
+			colorGrading.saturation.value = 0f;
+		}
 	}
 
 	private void OnEnable()
 	{
 		movementInput = defaultInputActions.Player.Movement;
+		movementInput.Enable();
+		
 		shootInput = defaultInputActions.Player.Shoot;
 		shootInput.performed += OnShootPerformed;
 		shootInput.canceled += OnShootCanceled;
-		movementInput.Enable();
 		shootInput.Enable();
+		
+		bulletTimeInput = defaultInputActions.Player.BulletTime;
+		bulletTimeInput.performed += OnBulletTimePerformed;
+		bulletTimeInput.canceled += OnBulletTimeCanceled;
+		bulletTimeInput.Enable();
 	}
 
 	private void OnDisable()
 	{
 		movementInput.Disable();
 		shootInput.Disable();
+		bulletTimeInput.Disable();
 	}
 	
 	private void FixedUpdate()
@@ -112,7 +161,7 @@ public class Player : MonoBehaviour
 		inputDirection = movementInput.ReadValue<Vector2>();
 
         // Calculate the target velocity based on input
-        Vector3 targetVelocity = new Vector3(inputDirection.x, inputDirection.y, 0.0f) * maxSpeed;
+        Vector3 targetVelocity = new Vector3(inputDirection.x, inputDirection.y, 0.0f) * (maxSpeed / Time.timeScale);
 
         // Smoothly adjust current velocity toward target velocity
         Vector3 velocityDiff = targetVelocity - rigidBody.velocity;
@@ -122,8 +171,8 @@ public class Player : MonoBehaviour
             ? acceleration : deceleration;
 
         // Limit the velocity change to avoid abrupt movement
-        velocityDiff.x = Mathf.Clamp(velocityDiff.x, -accelRate * Time.fixedDeltaTime, accelRate * Time.fixedDeltaTime);
-        velocityDiff.y = Mathf.Clamp(velocityDiff.y, -accelRate * Time.fixedDeltaTime, accelRate * Time.fixedDeltaTime);
+        velocityDiff.x = Mathf.Clamp(velocityDiff.x, -accelRate * Time.unscaledDeltaTime, accelRate * Time.unscaledDeltaTime);
+        velocityDiff.y = Mathf.Clamp(velocityDiff.y, -accelRate * Time.unscaledDeltaTime, accelRate * Time.unscaledDeltaTime);
 
 		//Apply forces in the direction of acceleration
         rigidBody.AddForce(velocityDiff, ForceMode.VelocityChange);
@@ -138,7 +187,7 @@ public class Player : MonoBehaviour
         Quaternion targetRotation = Quaternion.Euler(-90f, desiredTilt, 0f);
 
         // Spherical lerp towards the target rotation
-        rigidBody.rotation = Quaternion.Slerp(rigidBody.rotation, targetRotation, rotationSmoothing * Time.fixedDeltaTime);
+        rigidBody.rotation = Quaternion.Slerp(rigidBody.rotation, targetRotation, rotationSmoothing * Time.unscaledDeltaTime);
         
         //Wraps the player around to other side if they go off-screen
         if(rigidBody.position.x < minX) rigidBody.position = new Vector3(maxX, rigidBody.position.y, rigidBody.position.z);
@@ -154,6 +203,13 @@ public class Player : MonoBehaviour
 				Shoot();
 				lastShotTime = Time.time;
 			}
+		}
+		
+		if (!isBulletTimeActive && currentBulletTime < bulletTimeDuration)
+		{
+			currentBulletTime += (bulletTimeDuration / bulletTimeCooldown) * Time.deltaTime;
+			currentBulletTime = Mathf.Clamp(currentBulletTime, 0, bulletTimeDuration);
+			UpdateBulletTimeUI();
 		}
 	}
 
@@ -174,6 +230,22 @@ public class Player : MonoBehaviour
 	private void OnShootCanceled(InputAction.CallbackContext context)
 	{
 		isShooting = false;
+	}
+
+	private void OnBulletTimePerformed(InputAction.CallbackContext context)
+	{
+		if (!isBulletTimeActive && currentBulletTime > 0)
+		{
+			bulletTimeCoroutine = StartCoroutine(ActivateBulletTime());
+		}
+	}
+	
+	private void OnBulletTimeCanceled(InputAction.CallbackContext context)
+	{
+		if (isBulletTimeActive)
+		{
+			DeactivateBulletTime();
+		}
 	}
 
 	private void InitializeHealthUI()
@@ -234,12 +306,25 @@ public class Player : MonoBehaviour
 		}
 	}
 
-	public void Heal()
+	public void Heal(int heartsToHeal)
 	{
-		currentLives = Mathf.Min(currentLives + 1, maxLives);
+		currentLives = Mathf.Min(currentLives + heartsToHeal, maxLives);
 		UpdateHealthUI();
 	}
 
+	public void ToggleShield(bool active)
+	{
+		if(active) isInvincible = true;
+		else isInvincible = false;
+	}
+
+	public void ModifyMovementSpeed(float newMaxSpeed, float newAcceleration, float newDeceleration)
+	{
+		maxSpeed = newMaxSpeed;
+		acceleration = newAcceleration;
+		deceleration = newDeceleration;
+	}
+	
 	public void TakeDamage()
 	{
 		if (isInvincible) return;
@@ -275,6 +360,72 @@ public class Player : MonoBehaviour
 		
 		Destroy(tempAudioSource, deathSound.length);
 		Destroy(gameObject);
+	}
+	
+	private IEnumerator ActivateBulletTime()
+	{
+		isBulletTimeActive = true;
+		Time.timeScale = bulletTimeScale;
+		Time.fixedDeltaTime = 0.02f * Time.timeScale;
+		
+		ModifyMovementSpeed(maxSpeed * (1/bulletTimeScale), acceleration * (1/bulletTimeScale), deceleration * (1/bulletTimeScale));
+
+		StartCoroutine(TransitionSaturation(-100f));
+		
+		while (isBulletTimeActive && currentBulletTime > 0)
+		{
+			float deltaTime = Time.unscaledDeltaTime;
+			currentBulletTime -= deltaTime;
+			UpdateBulletTimeUI();
+
+			if (currentBulletTime <= 0)
+			{
+				DeactivateBulletTime();
+			}
+
+			yield return null;
+		}
+		
+	}
+	private void DeactivateBulletTime()
+	{
+		if (bulletTimeCoroutine != null)
+		{
+			StopCoroutine(bulletTimeCoroutine);
+			bulletTimeCoroutine = null;
+		}
+
+		isBulletTimeActive = false;
+		Time.timeScale = 1f;
+		Time.fixedDeltaTime = 0.02f;
+		
+		ModifyMovementSpeed(maxSpeed / (1/bulletTimeScale), acceleration / (1/bulletTimeScale), deceleration / (1/bulletTimeScale));
+
+		StartCoroutine(TransitionSaturation(0));
+	}
+
+	private IEnumerator TransitionSaturation(float targetSaturation)
+	{
+		float startSaturation = colorGrading.saturation.value;
+		float elapsedTime = 0f;
+
+		while (elapsedTime < saturationTransitionDuration)
+		{
+			elapsedTime += Time.unscaledDeltaTime; // Use unscaled time to ignore time scale changes
+			float blend = Mathf.Clamp01(elapsedTime / saturationTransitionDuration);
+			colorGrading.saturation.value = Mathf.Lerp(startSaturation, targetSaturation, blend);
+			yield return null;
+		}
+
+		colorGrading.saturation.value = targetSaturation;
+	}
+	
+	private void UpdateBulletTimeUI()
+	{
+		if (bulletTimeSlider != null)
+		{
+			bulletTimeSlider.value = currentBulletTime;
+		}
 	}
 
 	private IEnumerator DamageFeedback()
