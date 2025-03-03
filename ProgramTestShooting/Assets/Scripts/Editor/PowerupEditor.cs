@@ -9,6 +9,7 @@ public class PowerupEditor : Editor
     {
         PowerUps powerUp = (PowerUps)target;
 
+        // Default Fields to show
         powerUp.powerUpType = (PowerUpType)EditorGUILayout.EnumPopup("Power-Up Type", powerUp.powerUpType);
         powerUp.powerUpDuration = EditorGUILayout.FloatField("Duration", powerUp.powerUpDuration);
         powerUp.powerUpMoveSpeed = EditorGUILayout.FloatField("PowerUp Move-Speed", powerUp.powerUpMoveSpeed);

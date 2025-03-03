@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -144,7 +143,10 @@ public class PowerUps : MonoBehaviour
         player.Deceleration = originalDeceleration;
 
         // Deactivate UI indicator
-        speedBoostImage.gameObject.SetActive(false);
+        if (speedBoostImage != null)
+        {
+            speedBoostImage.gameObject.SetActive(false);
+        }
 
     }
     
@@ -166,7 +168,10 @@ public class PowerUps : MonoBehaviour
         player.TripleShotActive = false;
 
         // Deactivate UI indicator
-        tripleShotImage.gameObject.SetActive(false);
+        if (tripleShotImage != null)
+        {
+            tripleShotImage.gameObject.SetActive(false);
+        }
 
     }
     
@@ -188,14 +193,19 @@ public class PowerUps : MonoBehaviour
         player.CurrentFireMode = Player.FireMode.Single; 
 
         // Deactivate UI indicator
-        fullAutoImage.gameObject.SetActive(false);
+        if (fullAutoImage != null)
+        {
+            fullAutoImage.gameObject.SetActive(false);
+        }
 
     }
 
     private IEnumerator HandleShield()
     {
+        // activate player invincibility 
         player.ToggleShield(true);
 
+        // activate UI indicator
         if (shieldImage != null)
         {
             shieldImage.gameObject.SetActive(true);
@@ -203,9 +213,14 @@ public class PowerUps : MonoBehaviour
         
         yield return new WaitForSeconds(powerUpDuration);
         
+        // deactivate player invincibility after duration
         player.ToggleShield(false);
         
-        shieldImage.gameObject.SetActive(false);
+        // deactivate UI indicator
+        if (shieldImage != null)
+        {
+            shieldImage.gameObject.SetActive(false);
+        }
     }
 
 }

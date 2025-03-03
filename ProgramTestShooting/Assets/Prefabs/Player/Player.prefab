@@ -354,15 +354,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98353559c3d56bb45beb138657a73ad9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentFireMode: 0
   mPrefabPlayerBullet: {fileID: 7941598295554223428, guid: 489ca4fe60917514a823a5455dab0a38, type: 3}
+  currentFireMode: 0
   bulletSpawnActor: {fileID: 3911069672973420415}
   fireRate: 0.2
   tripleShotActive: 0
   bulletTimeDuration: 5
   bulletTimeCooldown: 10
   bulletTimeScale: 0.5
-  bulletTimeSlider: {fileID: 0}
+  bulletTimeSlider: {fileID: 1899221930881241984, guid: f1fceb2111c734447b1ca68d2415c33b, type: 3}
   saturationTransitionDuration: 0.5
   maxSpeed: 10
   acceleration: 10

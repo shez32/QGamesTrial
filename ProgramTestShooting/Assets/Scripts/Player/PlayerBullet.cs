@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,24 +6,25 @@ using UnityEngine;
 public class PlayerBullet : MonoBehaviour
 {
 	[Header("Parameter")]
-	public float m_move_speed = 5;
-	public float m_life_time = 2;
+	public float moveSpeed = 5;
+	public float lifeTime = 2;
 
 	public bool isPlayerUsing;
-	//
 	void Update()
 	{
 		if (isPlayerUsing)
 		{
-			transform.position += transform.up * (m_move_speed / Time.timeScale) * Time.deltaTime;
+			// we are dividing movespeed by time.timescale to counter-effect the bullet-time effect 
+			// this ensures that the bullet speed is constant irrespective of the time scale
+			transform.position += transform.up * (moveSpeed / Time.timeScale) * Time.deltaTime;
 		}
 		else
 		{
-			transform.position += -transform.up * m_move_speed * Time.deltaTime;
+			transform.position += -transform.up * moveSpeed * Time.deltaTime;
 		}
 
-		m_life_time -= Time.deltaTime;
-		if (m_life_time <= 0)
+		lifeTime -= Time.deltaTime;
+		if (lifeTime <= 0)
 		{
 			DeleteObject();
 		}

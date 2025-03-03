@@ -44,13 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21adf3c468347b548b28b94e38ff8aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnemySpawnEntries:
+  enemySpawnEntries:
   - enemyPrefab: {fileID: 8205035551131575323, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
-    chance: 40
+    chance: 30
   - enemyPrefab: {fileID: 8205035551131575323, guid: 1426f1f1d8eafda4fa97ea418bf7a357, type: 3}
     chance: 20
   - enemyPrefab: {fileID: 8205035551131575323, guid: a8e4def461fd1d641bdae4b157b415b3, type: 3}
-    chance: 40
+    chance: 50
   minSpawnInterval: 0.2
   maxSpawnInterval: 3
   spawnRangeMin: -5

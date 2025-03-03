@@ -1,19 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BackgroundPanner : MonoBehaviour
 {
-    public float panSpeed;
-    public float deceleration = 0.5f;
-    public PanType panDirection;
+    [SerializeField] private float panSpeed;  // Initial speed at which the background moves
+    [SerializeField] private float deceleration = 0.5f; // Rate at which movement slows down when game is over
+    [SerializeField] private PanType panDirection; 
    
-    private float tileSizeY;
-    private Vector3 startPosition;
+    private float tileSizeY; // Stores the height of the background tile
+    private Vector3 startPosition; // Starting position to reset the background position
 
     private bool isActive = true;
     private float currentPanSpeed;
-    private float offset;
+    private float offset; // Tracks the total movement offset
 
     void Start()
     {
@@ -26,18 +24,24 @@ public class BackgroundPanner : MonoBehaviour
     {
         if (isActive)
         {
+            // Increase the offset based on speed, causing continuous movement
             offset += Time.deltaTime * currentPanSpeed;
         }
         else if (currentPanSpeed > 0)
-        {
+        {   // If the game is over...........and the background is panning.....
+            // Gradually decrease speed until it reaches zero
             currentPanSpeed -= deceleration * Time.deltaTime;
-            if(currentPanSpeed < 0) currentPanSpeed = 0;
+            if(currentPanSpeed < 0) currentPanSpeed = 0; // Ensure it doesn't go negative
             
+            // Continue applying movement with reduced speed
             offset += Time.deltaTime * currentPanSpeed;
         }
         
         Vector3 direction = GetDirectionVector();
+        
+        // Uses Mathf.Repeat to loop the offset within tileSizeY to create an endless scrolling effect
         float newPosition = Mathf.Repeat(offset, tileSizeY);
+        
         transform.position = startPosition + direction * newPosition;
     }
 
@@ -53,6 +57,7 @@ public class BackgroundPanner : MonoBehaviour
 
     private Vector3 GetDirectionVector()
     {
+        // Returns a unit vector corresponding to the selected pan direction
         switch (panDirection)
         {
             case PanType.Left:
@@ -67,7 +72,6 @@ public class BackgroundPanner : MonoBehaviour
                 return Vector3.zero;
         }
     }
-
 }
 
 public enum PanType

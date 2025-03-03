@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -7,18 +5,16 @@ using UnityEngine;
 /// </summary>
 public class TitleLoop : MonoBehaviour
 {
-	public StageLoop m_stage_loop;
+	public StageLoop stageLoop;
 
 	[Header("Layout")]
-	public Transform m_ui_title;
+	public Transform uiTitle;
 	public Transform mainMenu;
 	
 	[Header("Audio")]
 	[SerializeField] private AudioSource audioSource;
 	[SerializeField] private AudioClip menuAudioClip;
-
-	//------------------------------------------------------------------------------
-
+	
 	private void Start()
 	{
 		//default start
@@ -29,12 +25,12 @@ public class TitleLoop : MonoBehaviour
 	{
 		CleanupTitle();
 		
-		m_stage_loop.StartStageLoop();
+		stageLoop.StartStageLoop();
 	}
 	
 	public void SetupTitle()
 	{
-		m_ui_title.gameObject.SetActive(true);
+		uiTitle.gameObject.SetActive(true);
 		mainMenu.gameObject.SetActive(true);
 
 		if (audioSource != null)
@@ -43,15 +39,16 @@ public class TitleLoop : MonoBehaviour
 			audioSource.loop = true;
 		}
 	}
-
+	
 	void CleanupTitle()
 	{
-		m_ui_title.gameObject.SetActive(false);
+		uiTitle.gameObject.SetActive(false);
 		mainMenu.gameObject.SetActive(false);
 		
 		audioSource.Stop();
 	}
 
+	//Function used by quit button in Main menu
 	public void QuitGame()
 	{
 		Application.Quit();

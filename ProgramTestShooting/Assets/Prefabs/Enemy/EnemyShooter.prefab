@@ -356,7 +356,7 @@ MonoBehaviour:
   - {fileID: 8205035551131575323, guid: 76bac5a5893e11247a970d433cd13bae, type: 3}
   - {fileID: 8205035551131575323, guid: 9ab3992070935b3408d65835679b40c1, type: 3}
   - {fileID: 8205035551131575323, guid: a2e98a26a06e12046be4acfa6d72ccd3, type: 3}
-  powerUpSpawnChance: 10
+  powerUpSpawnChance: 40
   bulletPrefab: {fileID: 6205013781952291633, guid: 078af7bcbabbade4194bd96aeb34ab8d, type: 3}
   firePoint: {fileID: 6940138463665250326}
   pivot: {fileID: 4108191444906110331}

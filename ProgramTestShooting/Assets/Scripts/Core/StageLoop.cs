@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 /// <summary>
@@ -12,13 +11,13 @@ public class StageLoop : MonoBehaviour
 	#region static 
 	static public StageLoop Instance { get; private set; }
 	#endregion
-
-	//
+	
+	#region public or editor visible variables
 	public TitleLoop titleLoop;
 
 	[Header("Layout")]
-	public Transform m_stage_transform;
-	public Text m_stage_score_text;
+	public Transform stageTransform;
+	public Text stageScoreText;
 	public GameObject restartMenu;
 	public Transform healthPanel;
 	public Transform powerUpPanel;
@@ -27,8 +26,8 @@ public class StageLoop : MonoBehaviour
 	[SerializeField] private Camera defaultCamera;
 
 	[Header("Prefab")]
-	public Player m_prefab_player;
-	public EnemySpawner m_prefab_enemy_spawner;
+	public Player prefabPlayer;
+	public EnemySpawner prefabEnemySpawner;
 	
 	[Header("Boundary")]
 	public BoxCollider topCollider;
@@ -41,12 +40,11 @@ public class StageLoop : MonoBehaviour
 	[SerializeField] private AudioSource audioSource;
 	[SerializeField] private AudioClip gameAudioClip;
 	[SerializeField] private AudioClip gameOverAudioClip;
-	//
-	int m_game_score = 0;
+	#endregion
+	
+	int gameScore = 0;
 
 	private EnemySpawner spawner;
-	//------------------------------------------------------------------------------
-	
 	
 	#region loop
 	public void StartStageLoop()
@@ -59,7 +57,7 @@ public class StageLoop : MonoBehaviour
 	/// </summary>
 	private IEnumerator StageCoroutine()
 	{
-		Debug.Log("Start StageCoroutine");
+		//Debug.Log("Start StageCoroutine");
 
 		SetupStage();
 
@@ -67,31 +65,33 @@ public class StageLoop : MonoBehaviour
 		{
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
-				//exit stage
+				//exit stage - have not implemented this
 			}
 			yield return null;
 		}
 	}
 	#endregion
-
-
+	
 	void SetupStage()
 	{
 		Instance = this;
 
-		m_game_score = 0;
+		gameScore = 0;
 		RefreshScore();
 		
+		//Deactivate the restart menu and Display the Player HUD
 		restartMenu.SetActive(false);
 		healthPanel.gameObject.SetActive(true);
 		powerUpPanel.gameObject.SetActive(true);
 
 		//create player
 		{
-			Player player = Instantiate(m_prefab_player, m_stage_transform);
+			Player player = Instantiate(prefabPlayer, stageTransform);
 			if (player)
 			{
 				player.transform.position = new Vector3(0, -4, 0);
+				
+				//Calculate the linear limits the player can move in
 				player.CalculateBounds(topCollider, bottomCollider, leftCollider, rightCollider);
 			}
 		}
@@ -99,7 +99,7 @@ public class StageLoop : MonoBehaviour
 		//create enemy spawner
 		{
 			{
-				if (!spawner) spawner = Instantiate(m_prefab_enemy_spawner, m_stage_transform);
+				if (!spawner) spawner = Instantiate(prefabEnemySpawner, stageTransform);
 					spawner.transform.position = new Vector3(0, 5.5f, 0);
 			}
 		}
@@ -113,15 +113,16 @@ public class StageLoop : MonoBehaviour
 
 	void CleanupStage()
 	{
+		//Deactivate all UI elements
 		restartMenu.SetActive(false);
 		healthPanel.gameObject.SetActive(false);
 		powerUpPanel.gameObject.SetActive(false);
 		
 		//delete all object in Stage
 		{
-			for (var n = 0; n < m_stage_transform.childCount; ++n)
+			for (var n = 0; n < stageTransform.childCount; ++n)
 			{
-				Transform temp = m_stage_transform.GetChild(n);
+				Transform temp = stageTransform.GetChild(n);
 				GameObject.Destroy(temp.gameObject);
 			}
 		}
@@ -131,22 +132,21 @@ public class StageLoop : MonoBehaviour
 		audioSource.Stop();
 	}
 
-	//------------------------------------------------------------------------------
-
 	public void AddScore(int a_value)
 	{
-		m_game_score += a_value;
+		gameScore += a_value;
 		RefreshScore();
 	}
 
 	void RefreshScore()
 	{
-		if (m_stage_score_text)
+		if (stageScoreText)
 		{
-			m_stage_score_text.text = $"Score {m_game_score:00000}";
+			stageScoreText.text = $"Score {gameScore:00000}";
 		}
 	}
 
+	//function is called when player has lost all lives
 	public void OnPlayerDeath()
 	{
 		OnDamage();
@@ -164,6 +164,7 @@ public class StageLoop : MonoBehaviour
 		restartMenu.SetActive(true);
 	}
 
+	//function is called when player takes damage
 	public void OnDamage()
 	{
 		if (defaultCamera != null)
@@ -172,6 +173,7 @@ public class StageLoop : MonoBehaviour
 		}
 	}
 
+	//Self Explanatory
 	private IEnumerator CameraShake(float duration, float magnitude)
 	{
 		Vector3 originalPosition = defaultCamera.transform.localPosition;
@@ -191,17 +193,18 @@ public class StageLoop : MonoBehaviour
 		defaultCamera.transform.localPosition = originalPosition;
 	}
 
+	//Function used by restart button in restart menu
 	public void RestartGame()
 	{
 		CleanupStage();
 		SetupStage();
 	}
 
+	//Function used by main menu button in restart menu
 	public void MainMenu()
 	{
 		CleanupStage();
 		titleLoop.SetupTitle();
 	}
 	
-
 }

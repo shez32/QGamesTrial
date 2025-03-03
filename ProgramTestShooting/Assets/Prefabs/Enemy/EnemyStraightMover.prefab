@@ -189,7 +189,7 @@ MonoBehaviour:
   hitAudio: {fileID: 8300000, guid: 8e0348dce4aa26045a16b9be2706fdce, type: 3}
   powerUps:
   - {fileID: 8205035551131575323, guid: 2a90235b34632c64f93a1a82af64c1b4, type: 3}
-  powerUpSpawnChance: 50
+  powerUpSpawnChance: 10
   meshFilters:
   - {fileID: -5754084199372789682, guid: 00e0e317446e1e940aa2a76237742e38, type: 3}
   - {fileID: -5754084199372789682, guid: 6354fb65f295de64b8d5cd6af48873bf, type: 3}
